@@ -6,8 +6,6 @@ import time
 from datetime import datetime, timedelta
 import os, sys
 sys.path.append(os.getcwd())
-import app.models.database_update_model as databaseUpdateModel
-import app.appcommon.app_configuration as appConf
 
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code "+str(rc))
