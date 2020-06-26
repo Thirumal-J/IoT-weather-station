@@ -13,7 +13,7 @@ global initialValues, sensedValues
 
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code "+str(rc))
-    client.subscribe("/senseHat/fetchTemperatureData")
+    client.subscribe("/senseHat/fetchTemperatureData",qos=1)
 
 def on_message(client, userdata, msg):
     temperatureData = json.loads(msg.payload.decode("utf-8"))

@@ -11,7 +11,7 @@ import app.appcommon.app_configuration as appConf
 
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code "+str(rc))
-    client.subscribe("/senseHat/fetchPressureData")
+    client.subscribe("/senseHat/fetchPressureData",qos=1)
 
 def on_message(client, userdata, msg):
     pressureData = json.loads(msg.payload.decode("utf-8"))

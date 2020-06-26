@@ -9,7 +9,7 @@ sys.path.append(os.getcwd())
 
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code "+str(rc))
-    client.subscribe("/senseHat/fetchWeatherReport")
+    client.subscribe("/senseHat/fetchWeatherReport",qos=1)
     print("Done")
     
 # The callback for when a PUBLISH message is received from the server.
@@ -17,19 +17,19 @@ def on_message(client, userdata, msg):
     print("INSIDE MESSAGE>>>",msg)
     sensedValues = json.loads(msg.payload.decode("utf-8"))
     print("sensedValues >>>",sensedValues)
-    publish.single("/senseHat/fetchLiveData",json.dumps(sensedValues), hostname="mqtt.eclipse.org")
+    publish.single("/senseHat/fetchLiveData",json.dumps(sensedValues), hostname="mqtt.eclipse.org",qos=1)
 
     pressureData = sensedValues.get("pressure")
     pressureData["createdTime"]= sensedValues.get("createdTime")
-    publish.single("/senseHat/fetchPressureData",json.dumps(pressureData), hostname="mqtt.eclipse.org")
+    publish.single("/senseHat/fetchPressureData",json.dumps(pressureData), hostname="mqtt.eclipse.org",qos=1)
 
     humidityData = sensedValues.get("humidity")
     humidityData["createdTime"]= sensedValues.get("createdTime")
-    publish.single("/senseHat/fetchHumidityData",json.dumps(humidityData), hostname="mqtt.eclipse.org")
+    publish.single("/senseHat/fetchHumidityData",json.dumps(humidityData), hostname="mqtt.eclipse.org",qos=1)
 
     temperatureData = sensedValues.get("temperature")
     temperatureData["createdTime"]= sensedValues.get("createdTime")
-    publish.single("/senseHat/fetchTemperatureData",json.dumps(temperatureData), hostname="mqtt.eclipse.org")
+    publish.single("/senseHat/fetchTemperatureData",json.dumps(temperatureData), hostname="mqtt.eclipse.org",qos=1)
 
 
 client = mqtt.Client()

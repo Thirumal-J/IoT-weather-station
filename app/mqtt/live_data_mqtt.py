@@ -10,7 +10,7 @@ import app.models.livedata_model as livedataModel
 
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code "+str(rc))
-    client.subscribe("/senseHat/fetchLiveData")
+    client.subscribe("/senseHat/fetchLiveData",qos=1)
 
 def on_message(client, userdata, msg):
     liveData = json.loads(msg.payload.decode("utf-8"))
