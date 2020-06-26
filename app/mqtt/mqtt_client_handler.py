@@ -42,6 +42,8 @@ def on_message(client, userdata, msg):
 client = mqtt.Client()
 client.on_connect = on_connect
 client.on_message = on_message
+client.on_disconnect = on_disconnect
+
 
 client.connect("mqtt.eclipse.org", 1883, 60)
 
