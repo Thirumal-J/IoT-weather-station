@@ -57,5 +57,5 @@ if __name__ == "__main__":
    HumidityDbConnection = humidityModel.getDbConnection()
    print(HumidityDbConnection)
    if (HumidityDbConnection["statusCode"]==0):
-       app.run(host=appConf.hostNameForHumidityData, port=appConf.portForHumidityData)
+       app.run(host=appConf.hostNameForHumidityData, port=appConf.portForHumidityData,debug=False)
        humidityModel.closeConnection()

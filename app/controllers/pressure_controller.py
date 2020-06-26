@@ -47,5 +47,5 @@ if __name__ == '__main__':
     PressureDbConnection = pressureModel.getDbConnection()
     print(PressureDbConnection)
     if (PressureDbConnection["statusCode"]==0):
-        app.run(host=appConf.hostNameForPressureData,port=appConf.portForPressureData)
+        app.run(host=appConf.hostNameForPressureData,port=appConf.portForPressureData,debug=False)
         pressureModel.closeConnection()

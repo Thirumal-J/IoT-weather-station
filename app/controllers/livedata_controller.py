@@ -18,5 +18,5 @@ class FetchLiveData(Resource):
 api.add_resource(FetchLiveData,"/fetchLiveWeather")
 
 if __name__ == '__main__':
-    app.run(host=appConf.hostNameForLiveDataFetching,port=appConf.portForLiveDataFetching)
+    app.run(host=appConf.hostNameForLiveDataFetching,port=appConf.portForLiveDataFetching,debug=False)
 
