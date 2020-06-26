@@ -11,6 +11,13 @@ def on_connect(client, userdata, flags, rc):
     print("Connected with result code "+str(rc))
     client.subscribe("/senseHat/fetchWeatherReport",qos=1)
     print("Done")
+
+def on_disconnect(client, userdata, rc):
+    client.loop_stop(force=False)
+    if rc != 0:
+        print("Unexpected disconnection.")
+    else:
+        print("Disconnected")
     
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
