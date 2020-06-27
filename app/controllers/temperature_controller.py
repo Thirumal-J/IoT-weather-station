@@ -56,5 +56,5 @@ if __name__ == "__main__":
     TemperatureDbConnection = temperatureModel.getDbConnection()
     print(TemperatureDbConnection)
     if (TemperatureDbConnection["statusCode"]==0):
-        app.run(host=appConf.hostNameForTemperatureData, port=appConf.portForTemperatureData)
+        app.run(host=appConf.hostNameForTemperatureData, port=appConf.portForTemperatureData,debug=False)
         temperatureModel.closeConnection()

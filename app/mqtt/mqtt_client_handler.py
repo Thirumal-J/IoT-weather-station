@@ -26,17 +26,17 @@ def on_message(client, userdata, msg):
     print("sensedValues >>>",sensedValues)
     publish.single("/senseHat/fetchLiveData",json.dumps(sensedValues), hostname="mqtt.eclipse.org",qos=1)
 
-    # pressureData = sensedValues.get("pressure")
-    # pressureData["createdTime"]= sensedValues.get("createdTime")
-    # publish.single("/senseHat/fetchPressureData",json.dumps(pressureData), hostname="mqtt.eclipse.org",qos=1)
+    pressureData = sensedValues.get("pressure")
+    pressureData["createdTime"]= sensedValues.get("createdTime")
+    publish.single("/senseHat/fetchPressureData",json.dumps(pressureData), hostname="mqtt.eclipse.org",qos=1)
 
     humidityData = sensedValues.get("humidity")
     humidityData["createdTime"]= sensedValues.get("createdTime")
     publish.single("/senseHat/fetchHumidityData",json.dumps(humidityData), hostname="mqtt.eclipse.org",qos=1)
 
-    # temperatureData = sensedValues.get("temperature")
-    # temperatureData["createdTime"]= sensedValues.get("createdTime")
-    # publish.single("/senseHat/fetchTemperatureData",json.dumps(temperatureData), hostname="mqtt.eclipse.org",qos=1)
+    temperatureData = sensedValues.get("temperature")
+    temperatureData["createdTime"]= sensedValues.get("createdTime")
+    publish.single("/senseHat/fetchTemperatureData",json.dumps(temperatureData), hostname="mqtt.eclipse.org",qos=1)
 
 
 client = mqtt.Client()

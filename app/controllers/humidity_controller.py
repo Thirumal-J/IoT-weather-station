@@ -36,7 +36,7 @@ class DropHumidityTable(Resource):
 
 class CreateHumidityTable(Resource):
     def get(self):
-        status = humidityModel.CreateHumidityTable()
+        status = humidityModel.CreateHumidityTable(appConf.humidityTableName)
         return {"status":status}
 
 class InsertHumidityData(Resource):
@@ -47,7 +47,7 @@ class InsertHumidityData(Resource):
 api.add_resource(TestConnection,"/")
 api.add_resource(DBConnection,"/getDbConnection")
 api.add_resource(FetchAllHumidityData,"/humidityData/<timeperiod>")
-api.add_resource(DropHumidityTable,"/dropHumidityTable/<tableName>")
+api.add_resource(DropHumidityTable,"/dropHumidityTable")
 api.add_resource(InsertHumidityData,"/insertHumidityData")
 api.add_resource(CreateHumidityTable,"/createHumidityTable")
 
