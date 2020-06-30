@@ -3,7 +3,7 @@
 
 #PRESSURE POSTGRESQL DATABASE DETAILS
 pressureDBConfig = {
-    "host": "192.168.0.105",
+    "host": "192.168.99.100",
     "user": "postgres",
     "password": "1234",
     "database": "pressure",
@@ -11,7 +11,7 @@ pressureDBConfig = {
 }
 #HUMIDITY POSTGRESQL DATABASE DETAILS
 humidityDBConfig = {
-    "host": "192.168.0.105",
+    "host": "192.168.99.100",
     "user": "postgres",
     "password": "1234",
     "database": "humidity",
@@ -19,7 +19,7 @@ humidityDBConfig = {
 }
 #TEMPERATURE POSTGRESQL DATABASE DETAILS
 temperatureDBConfig = {
-    "host": "192.168.0.105",
+    "host": "192.168.99.100",
     "user": "postgres",
     "password": "1234",
     "database": "temperature",

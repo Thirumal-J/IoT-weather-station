@@ -1,11 +1,21 @@
 version: "3.7"
 services:
-  # Service for the Postgres database 
+  # Service for the Postgres database
+  web:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - "4001:4001"
+      - "4002:4002"
+      - "4003:4003"
+      - "4004:4004"
+
   humiditydb:
     # Pull the latest 'postgres12-alpine' image
-    image: "postgres:12-alpine"
-    container_name: "postgres_humidity_database"   
-    # Postgres environment parameters and creating volumes to keep data saved in local 
+    image: "postgres"
+    container_name: "postgres_humidity_database"
+    # Postgres environment parameters and creating volumes to keep data saved in local
     volumes:
       - humidity-database:/var/lib/postgresql/data
       - ./init-humidity-database.sh:/docker-entrypoint-initdb.d/init-humidity-database.sh
@@ -19,7 +29,7 @@ services:
 
   pressuredb:
     # Pull the latest 'postgres10' image
-    image: "postgres:10"
+    image: "postgres"
     container_name: "postgres_pressure_database"
     # Postgres environment parameters and creating volumes to keep data saved in local
     volumes:
@@ -35,7 +45,7 @@ services:
 
   temperaturedb:
     # Pull the latest 'postgres11' image
-    image: "postgres:11"
+    image: "postgres"
     container_name: "postgres_temperature_database"
     # Postgres environment parameters and creating volumes to keep data saved in local
     volumes:
@@ -50,6 +60,7 @@ services:
       - "5003:5432"
 #MOUNTING VOLUMES
 volumes:
+  web:
   humidity-database:
   pressure-database:
   temperature-database:
