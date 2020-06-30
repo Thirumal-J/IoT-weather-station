@@ -1,22 +1,29 @@
 # ***********************************************************************************************************#
 ## DATABASE CONFIGURATIONS, TABLE NAMES, COMMON DATE FORMATS
 
-#PRESSURE DATABASE DETAILS
+#PRESSURE POSTGRESQL DATABASE DETAILS
 pressureDBConfig = {
-    "host": "127.0.0.1",
+    "host": "192.168.0.105",
     "user": "postgres",
-    "password": "miciotproject",
-    "database": "pressuredb",
-    "port":"5432",
+    "password": "1234",
+    "database": "pressure",
+    "port":"5002",
 }
-#TEMPERATURE DATABASE DETAILS
-temperatureDBConfig = {
-	"database": "temperaturedb"
-}
-
-#HUMIDITY DATABASE DETAILS
+#HUMIDITY POSTGRESQL DATABASE DETAILS
 humidityDBConfig = {
-	"database": "humiditydb"
+    "host": "192.168.0.105",
+    "user": "postgres",
+    "password": "1234",
+    "database": "humidity",
+    "port":"5004",
+}
+#TEMPERATURE POSTGRESQL DATABASE DETAILS
+temperatureDBConfig = {
+    "host": "192.168.0.105",
+    "user": "postgres",
+    "password": "1234",
+    "database": "temperature",
+    "port":"5003",
 }
 
 #PRESSURE TABLE NAME USED IN DATABASE

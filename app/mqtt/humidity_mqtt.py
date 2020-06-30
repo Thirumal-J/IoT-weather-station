@@ -26,7 +26,9 @@ def on_message(client, userdata, msg):
 
     createdDateTimeAsObj = datetime.strptime(humidityData.get("createdTime"), appConf.dateFormat)
     createdDateTimeAsObj = createdDateTimeAsObj.strftime(appConf.dateFormat)
-    humidityModel.insertDataToTable(appConf.humidityTableName,humidityData["unit"],humidityData["value"],createdDateTimeAsObj)
+    # humidityModel.insertDataToTable(appConf.humidityTableName,humidityData["unit"],humidityData["value"],createdDateTimeAsObj)
+    #FOR Humidity DATABASE INSERTION
+    humidityModel.insertDataIntoTable(appConf.humidityTableName, createdDateTimeAsObj, json.dumps(humidityData))
 
 client = mqtt.Client()
 client.on_connect = on_connect

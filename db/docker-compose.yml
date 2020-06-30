@@ -1,0 +1,55 @@
+version: "3.7"
+services:
+  # Service for the Postgres database 
+  humiditydb:
+    # Pull the latest 'postgres12-alpine' image
+    image: "postgres:12-alpine"
+    container_name: "postgres_humidity_database"   
+    # Postgres environment parameters and creating volumes to keep data saved in local 
+    volumes:
+      - humidity-database:/var/lib/postgresql/data
+      - ./init-humidity-database.sh:/docker-entrypoint-initdb.d/init-humidity-database.sh
+    # Create environment
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD="1234"
+    # Bind mount the default Postgres port
+    ports:
+      - "5004:5432"
+
+  pressuredb:
+    # Pull the latest 'postgres10' image
+    image: "postgres:10"
+    container_name: "postgres_pressure_database"
+    # Postgres environment parameters and creating volumes to keep data saved in local
+    volumes:
+      - pressure-database:/var/lib/postgresql/data
+      - ./init-pressure-database.sh:/docker-entrypoint-initdb.d/init-pressure-database.sh
+    # Create environment
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD="1234"
+    # Bind mount the default Postgres port
+    ports:
+      - "5002:5432"
+
+  temperaturedb:
+    # Pull the latest 'postgres11' image
+    image: "postgres:11"
+    container_name: "postgres_temperature_database"
+    # Postgres environment parameters and creating volumes to keep data saved in local
+    volumes:
+      - temperature-database:/var/lib/postgresql/data
+      - ./init-temperature-database.sh:/docker-entrypoint-initdb.d/init-temperature-database.sh
+    # Create environment
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD="1234"
+    # Bind mount the default Postgres port
+    ports:
+      - "5003:5432"
+#MOUNTING VOLUMES
+volumes:
+  humidity-database:
+  pressure-database:
+  temperature-database:

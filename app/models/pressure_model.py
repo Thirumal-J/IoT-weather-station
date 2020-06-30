@@ -10,15 +10,13 @@ import app.appcommon.app_constants as constant  #Importing Constant variables fi
 
 class staticVar:
     connection = ""
-    isDBConnected = False
     cursor = ""
-    DBConnectionData = {"statusCode":None,"connectionMsg":None} ##Database Connection Codes and Messages >>> Success:0, FAILED:1
+    DBConnectionData = {"statusCode":None,"connectionMsg":None,"isDBConnected":False} ##Database Connection Codes and Messages >>> Success:0, FAILED:1
     DBQueryStatus = {"statusCode":None,"queryResult":None,"statusMessage":None} ##Database Query Codes and Messages >>> Success:0, FAILED:1
     dataFrom = ""
     dataTill = ""
     days_to_subtract = 0
     
-
 def getDbConnection():
     try:
         #DB Details fetched from the Configuration file
@@ -28,40 +26,36 @@ def getDbConnection():
                                         port = appConf.pressureDBConfig["port"],
                                         database = appConf.pressureDBConfig["database"])
         staticVar.cursor = staticVar.connection.cursor()
-        staticVar.isDBConnected = True
+        staticVar.DBConnectionData["isDBConnected"] = True
         staticVar.DBConnectionData["statusCode"] = constant.SUCESS_STATUS_CODE
         staticVar.DBConnectionData["connectionMsg"] = constant.SUCESS_STATUS_MESSAGE
+        print(staticVar.DBConnectionData)
         return staticVar.DBConnectionData
     except (Exception, psycopg2.Error) as error :
+        staticVar.DBConnectionData["isDBConnected"] = False
         staticVar.DBConnectionData["statusCode"] = constant.FAILED_STATUS_CODE
         staticVar.DBConnectionData["connectionMsg"] = constant.FAILED_STATUS_MESSAGE
         return staticVar.DBConnectionData
 
-def dbConnector():
-    if (staticVar.isDBConnected):
-        print("Db Already connected",staticVar.isDBConnected)
-        return
-    else:
-        print("Creating new DB Connection")
-        getDbConnection()
-
 def isTableExist(tableName):
     try:
-        dbConnector()
+        getDbConnection()
         table_exist_query = "SELECT EXISTS(SELECT * FROM information_schema.tables WHERE table_name ='"+tableName+"');"
         staticVar.cursor.execute(table_exist_query) # Should be logged
         if(staticVar.cursor.fetchone()[0]):
+            queryStatusUpdate(constant.SUCESS_STATUS_CODE,constant.SUCESS_STATUS_MESSAGE,constant.POSTGRESQL_DB_TABLE_EXIST_MESSAGE)
             return True
         else:
+            queryStatusUpdate(constant.SUCESS_STATUS_CODE,constant.SUCESS_STATUS_MESSAGE,constant.POSTGRESQL_DB_TABLE_NOT_EXIST_MESSAGE)
             return False
     except (Exception, psycopg2.DatabaseError) as error :
+        queryStatusUpdate(constant.FAILED_STATUS_CODE,constant.FAILED_STATUS_MESSAGE,f"{constant.POSTGRESQL_DB_COMMON_ERROR}>>>{error}")
         print ("Error while checking whether "+tableName+" Table is present or not>>", error) # Should be logged
         return ("Error while checking whether "+tableName+" Table is present or not>>", error)
 
 def dropTable(tableName):
     try:
         if(isTableExist(tableName)):
-            dbConnector()
             staticVar.cursor.execute("DROP TABLE "+tableName+" CASCADE;")
             staticVar.connection.commit()
             queryStatusUpdate(constant.SUCESS_STATUS_CODE,constant.SUCESS_STATUS_MESSAGE,constant.POSTGRESQL_DB_DROP_TABLE_SUCCESS_MESSAGE)
@@ -72,13 +66,14 @@ def dropTable(tableName):
     except (Exception, psycopg2.DatabaseError) as error :
         queryStatusUpdate(constant.FAILED_STATUS_CODE,constant.FAILED_STATUS_MESSAGE,f"{constant.POSTGRESQL_DB_DROP_TABLE_FAILURE_MESSAGE} >>> {error}")
         return {"TableName":tableName,"queryStatusUpdate": staticVar.DBQueryStatus}
-    
+    finally:
+        closeConnection()
+
 def createPressureTable():
     try:        
         if (isTableExist(appConf.pressureTableName)):
-            return(constant.TABLE_EXIST_MESSAGE)
+            return {"TableName":appConf.pressureTableName,"queryStatusUpdate": staticVar.DBQueryStatus}
         else:
-            dbConnector()
             create_table_query = f'CREATE TABLE IF NOT EXISTS public."{appConf.pressureTableName}"(fetchedTime TIMESTAMP NOT NULL, fetchedData jsonb NOT NULL, PRIMARY KEY (fetchedTime));'
             alter_table_query = f'ALTER TABLE public."{appConf.pressureTableName}" OWNER to {appConf.pressureDBConfig["user"]};'
             # print(create_table_query)
@@ -86,42 +81,40 @@ def createPressureTable():
             staticVar.cursor.execute(create_table_query)
             staticVar.cursor.execute(create_table_query)
             staticVar.connection.commit()
-            return constant.POSTGRESQL_DB_CREATE_TABLE_SUCCESS_MESSAGE # Should be logged
+            queryStatusUpdate(constant.SUCESS_STATUS_CODE,constant.SUCESS_STATUS_MESSAGE,constant.POSTGRESQL_DB_CREATE_TABLE_SUCCESS_MESSAGE) 
+            return {"TableName":appConf.pressureTableName,"queryStatusUpdate": staticVar.DBQueryStatus}
 
     except (Exception, psycopg2.DatabaseError) as error :
         queryStatusUpdate(constant.FAILED_STATUS_CODE,constant.FAILED_STATUS_MESSAGE,f"{constant.POSTGRESQL_DB_INSERTION_FAILURE_MESSAGE} >>> {error}")
         print ("Error while creating PostgreSQL table", error) # Should be logged
-        return ("Error while creating PostgreSQL table", error)
+        return {"TableName":appConf.pressureTableName,"queryStatusUpdate": staticVar.DBQueryStatus}
+    finally:
+        closeConnection()
 
 def insertDataIntoTable(tableName,fetchedtime,fetcheddata):
     try:
-        dbConnector()
-        # print("inside insertdata")
-        # if (isTableExist(tableName) == False):
-        #     createPressureTable()
-        # print(tableName,fetchedtime,fetcheddata)
-        # insert_query = 'INSERT INTO public.%s VALUES(%s,%s);'
-        # insert_query = f'INSERT INTO {tableName} VALUES ({fetchedTime},{fetcheddata});'
+        createPressureTable()
+        if (isTableExist(tableName)==False):
+            return {"TableName":tableName,"queryStatusUpdate": staticVar.DBQueryStatus}
         insert_query = "INSERT INTO "+tableName+" VALUES ('"+fetchedtime+"', '"+fetcheddata+"'::jsonb );"
-        print(insert_query)
         record_to_insert = (tableName,fetchedtime,fetcheddata)
-        print(insert_query)
         staticVar.cursor.execute(insert_query)
         staticVar.connection.commit()
         print("done inserting")
         count = staticVar.cursor.rowcount
-        queryStatusUpdate(constant.SUCESS_STATUS_CODE,constant.SUCESS_STATUS_MESSAGE,f"{count} {constant.POSTGRESQL_DB_INSERTION_SUCESS_MESSAGE}")
-        
-        return staticVar.DBQueryStatus      # Should be logged
+        queryStatusUpdate(constant.SUCESS_STATUS_CODE,constant.SUCESS_STATUS_MESSAGE,f"{count} {constant.POSTGRESQL_DB_INSERTION_SUCESS_MESSAGE}") 
+        return {"TableName":tableName,"queryStatusUpdate": staticVar.DBQueryStatus}
     except (Exception, psycopg2.DatabaseError) as error :
         queryStatusUpdate(constant.FAILED_STATUS_CODE,constant.FAILED_STATUS_MESSAGE,f"{constant.POSTGRESQL_DB_INSERTION_FAILURE_MESSAGE} >>> {error}")
-        return staticVar.DBQueryStatus # Should be logged
-
+        return {"TableName":tableName,"queryStatusUpdate": staticVar.DBQueryStatus}
+    finally:
+        closeConnection()
+        
 def fetchDataFromTable(tableName,timeperiod):
     try:
-        dbConnector()
+        createPressureTable()
         if (isTableExist(tableName) == False):
-            createPressureTable()
+            return {"TableName":tableName,"queryStatusUpdate": staticVar.DBQueryStatus}
         staticVar.cursor =  staticVar.connection.cursor(cursor_factory=RealDictCursor)
         if(timeperiod.lower()=='lastweek'):
             staticVar.days_to_subtract = 7
@@ -148,11 +141,15 @@ def fetchDataFromTable(tableName,timeperiod):
 
         queryStatusUpdate(constant.SUCESS_STATUS_CODE,constant.SUCESS_STATUS_MESSAGE, constant.POSTGRESQL_DB_DATA_FETCHING_SUCCESS_MESSAGE)
         return results
+
     except (Exception, psycopg2.DatabaseError) as error :
         queryStatusUpdate(constant.FAILED_STATUS_CODE,constant.FAILED_STATUS_MESSAGE, constant.POSTGRESQL_DB_DATA_FETCHING_FAILED_MESSAGE)
         print ("Error while fetching data from PostgreSQL table", error,">>> ",staticVar.DBQueryStatus)    # Should be logged     
-        return staticVar.DBQueryStatus
+        return {"TableName":tableName,"queryStatusUpdate": staticVar.DBQueryStatus}
 
+    finally:
+        closeConnection()
+        
 def queryStatusUpdate(statusCode,queryResult,statusMessage):
     staticVar.DBQueryStatus["statusCode"] = statusCode
     staticVar.DBQueryStatus["queryResult"] = queryResult
@@ -161,11 +158,11 @@ def queryStatusUpdate(statusCode,queryResult,statusMessage):
 
 def closeConnection():
     try:
-        if(staticVar.isDBConnected):
+        if(staticVar.DBConnectionData["isDBConnected"]):
             staticVar.cursor.close()
             staticVar.connection.close()
-            staticVar.isDBConnected = False
-            print(f"{constant.POSTGRESQL_DB_CLOSE_CONNECTION_SUCCESS_MESSAGE} >>> DB Connection Status >>> {staticVar.isDBConnected}")
+            staticVar.DBConnectionData["isDBConnected"] = False
+            print(f"{constant.POSTGRESQL_DB_CLOSE_CONNECTION_SUCCESS_MESSAGE} >>> DB Connection Status >>> {staticVar.DBConnectionData['isDBConnected']}")
             return constant.POSTGRESQL_DB_CLOSE_CONNECTION_SUCCESS_MESSAGE # Should be logged
     except (Exception, psycopg2.Error) as error :
         print (f"{constant.POSTGRESQL_DB_CLOSE_CONNECTION_FAILURE_MESSAGE} >>> {error}") # Should be logged

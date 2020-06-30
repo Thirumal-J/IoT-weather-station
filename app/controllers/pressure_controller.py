@@ -18,34 +18,30 @@ class DBConnection(Resource):
 # MAIN MICRO SERVCICE FOR PRESSURE
 class FetchAllPressureData(Resource):
     def get(self,timeperiod):
-        print(timeperiod) # Should be logged
         sensedPressureValues = pressureModel.fetchDataFromTable(appConf.pressureTableName,timeperiod)
         return sensedPressureValues
 
 class DropTable(Resource):
-    def delete(self, tableName):
+    def delete(self):
         status = pressureModel.dropTable(appConf.pressureTableName)# for pressure table
-        return {"Status":status}
+        return {"status":status}
 
 class CreatePressureTable(Resource):
     def get(self):
         status = pressureModel.createPressureTable()
-        return {"Status":status}
+        return {"status":status}
 
 class InsertPressureData(Resource):
     def post(self):
         inputJson = request.get_json()
-        return pressureModel.insertDataIntoTable(appConf.pressureTableName,inputJson["fetchedTime"],inputJson["fetchedData"])
+        status = pressureModel.insertDataIntoTable(appConf.pressureTableName,inputJson["fetchedTime"],inputJson["fetchedData"])
+        return {"status":status} 
 
 api.add_resource(DBConnection,"/getDbConnection")
 api.add_resource(FetchAllPressureData,"/pressureData/<timeperiod>")
-api.add_resource(DropTable,"/dropTable/<tableName>")#Only for testing
+api.add_resource(DropTable,"/dropTable")#Only for testing
 api.add_resource(CreatePressureTable,"/createPressureTable")#Only for testing
 api.add_resource(InsertPressureData,"/insertPressureData")#Only for testing
 
 if __name__ == '__main__':
-    PressureDbConnection = pressureModel.getDbConnection()
-    print(PressureDbConnection)
-    if (PressureDbConnection["statusCode"]==0):
-        app.run(host=appConf.hostNameForPressureData,port=appConf.portForPressureData,debug=False)
-        pressureModel.closeConnection()
+    app.run(host=appConf.hostNameForPressureData,port=appConf.portForPressureData,debug=False)

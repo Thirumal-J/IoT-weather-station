@@ -28,7 +28,9 @@ def on_message(client, userdata, msg):
 
     createdDateTimeAsObj = datetime.strptime(temperatureData.get("createdTime"), appConf.dateFormat)
     createdDateTimeAsObj = createdDateTimeAsObj.strftime(appConf.dateFormat)
-    temperatureModel.insertDataToTable(appConf.temperatureTableName,temperatureData["unit"],temperatureData["value"],createdDateTimeAsObj)
+    # temperatureModel.insertDataToTable(appConf.temperatureTableName,temperatureData["unit"],temperatureData["value"],createdDateTimeAsObj)
+    #FOR temperature DATABASE INSERTION
+    temperatureModel.insertDataIntoTable(appConf.temperatureTableName, createdDateTimeAsObj, json.dumps(temperatureData))
       
 client = mqtt.Client()
 client.on_connect = on_connect

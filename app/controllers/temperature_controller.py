@@ -1,38 +1,30 @@
-import os
-from flask import Flask , jsonify , request
+from flask import Flask, request
 from flask_restful import Resource, Api
-import sqlite3
+import psycopg2
 import socket
 import json
 import os, sys
 sys.path.append(os.getcwd())
-import app.appcommon.app_configuration as appConf
 import app.models.temperature_model as temperatureModel
+import app.appcommon.app_configuration as appConf
 
 app = Flask(__name__)
 api = Api(app)
-
-class TestConnection(Resource):
-    def get(self):
-        return "Connection Successful"
-    
-    def post(self):
-        inputJson = request.get_json()
-        return {"input data":inputJson},201
 
 class DBConnection(Resource):
     def get(self):
         return temperatureModel.getDbConnection()
 
+# MAIN MICRO SERVCICE FOR PRESSURE
 class FetchAllTemperatureData(Resource):
     def get(self,timeperiod):
-        print(timeperiod)
-        tempdata = temperatureModel.fetchDataFromTable(appConf.temperatureTableName,timeperiod)
-        return jsonify(tempdata)
+        print(timeperiod) # Should be logged
+        sensedTemperatureValues = temperatureModel.fetchDataFromTable(appConf.temperatureTableName,timeperiod)
+        return sensedTemperatureValues
 
-class DropTemperatureTable(Resource):
-    def delete(self, tableName):
-        status=temperatureModel.dropTable(appConf.temperatureTableName)
+class DropTable(Resource):
+    def delete(self):
+        status = temperatureModel.dropTable(appConf.temperatureTableName)# for temperature table
         return {"status":status}
 
 class CreateTemperatureTable(Resource):
@@ -43,18 +35,14 @@ class CreateTemperatureTable(Resource):
 class InsertTemperatureData(Resource):
     def post(self):
         inputJson = request.get_json()
-        return temperatureModel.insertDataToTable(appConf.temperatureTableName,inputJson["fetchedUnit"],inputJson["fetchedValue"],inputJson["fetchedTime"])
+        status = temperatureModel.insertDataIntoTable(appConf.temperatureTableName,inputJson["fetchedTime"],inputJson["fetchedData"])
+        return {"status":status} 
 
-api.add_resource(TestConnection,"/")
 api.add_resource(DBConnection,"/getDbConnection")
 api.add_resource(FetchAllTemperatureData,"/temperatureData/<timeperiod>")
-api.add_resource(DropTemperatureTable,"/dropTableTemperature/<tableName>")
-api.add_resource(InsertTemperatureData,"/insertTemperatureData")
-api.add_resource(CreateTemperatureTable,"/createTemperatureTable")
+api.add_resource(DropTable,"/dropTable")#Only for testing
+api.add_resource(CreateTemperatureTable,"/createTemperatureTable")#Only for testing
+api.add_resource(InsertTemperatureData,"/insertTemperatureData")#Only for testing
 
-if __name__ == "__main__":
-    TemperatureDbConnection = temperatureModel.getDbConnection()
-    print(TemperatureDbConnection)
-    if (TemperatureDbConnection["statusCode"]==0):
-        app.run(host=appConf.hostNameForTemperatureData, port=appConf.portForTemperatureData,debug=False)
-        temperatureModel.closeConnection()
+if __name__ == '__main__':
+    app.run(host=appConf.hostNameForTemperatureData,port=appConf.portForTemperatureData,debug=False)
