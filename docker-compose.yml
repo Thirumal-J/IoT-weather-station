@@ -1,66 +1,85 @@
 version: "3.7"
 services:
   # Service for the Postgres database
-  web:
+  # Proxies requests to internal services
+  api-gateway:
+    image: nginx:1.17.10
+    container_name: reverse_proxy
+    depends_on:
+      - back-end
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - 80:80
+
+  back-end:
     build:
       context: ./
-      dockerfile: Dockerfile
+      dockerfile: service.Dockerfile
     ports:
-      - "4001:4001"
-      - "4002:4002"
-      - "4003:4003"
-      - "4004:4004"
+      - 4001:4001
+      - 4002:4002
+      - 4003:4003
+      - 4004:4004
+    restart: on-failure
+
+  front-end:
+    build:
+      context: ./iot_dashboard-master
+      dockerfile: web.Dockerfile
+    ports:
+      - 8080:80
+    restart: on-failure
 
   humiditydb:
-    # Pull the latest 'postgres12-alpine' image
+    # Pull the latest 'postgres' image
     image: "postgres"
     container_name: "postgres_humidity_database"
     # Postgres environment parameters and creating volumes to keep data saved in local
     volumes:
       - humidity-database:/var/lib/postgresql/data
-      - ./init-humidity-database.sh:/docker-entrypoint-initdb.d/init-humidity-database.sh
+      - ./db/init-humidity-database.sh:/docker-entrypoint-initdb.d/init-humidity-database.sh
     # Create environment
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD="1234"
     # Bind mount the default Postgres port
     ports:
-      - "5004:5432"
+      - 5004:5432
 
   pressuredb:
-    # Pull the latest 'postgres10' image
+    # Pull the latest 'postgres' image
     image: "postgres"
     container_name: "postgres_pressure_database"
     # Postgres environment parameters and creating volumes to keep data saved in local
     volumes:
       - pressure-database:/var/lib/postgresql/data
-      - ./init-pressure-database.sh:/docker-entrypoint-initdb.d/init-pressure-database.sh
+      - ./db/init-pressure-database.sh:/docker-entrypoint-initdb.d/init-pressure-database.sh
     # Create environment
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD="1234"
     # Bind mount the default Postgres port
     ports:
-      - "5002:5432"
+      - 5002:5432
 
   temperaturedb:
-    # Pull the latest 'postgres11' image
+    # Pull the latest 'postgres' image
     image: "postgres"
     container_name: "postgres_temperature_database"
     # Postgres environment parameters and creating volumes to keep data saved in local
     volumes:
       - temperature-database:/var/lib/postgresql/data
-      - ./init-temperature-database.sh:/docker-entrypoint-initdb.d/init-temperature-database.sh
+      - ./db/init-temperature-database.sh:/docker-entrypoint-initdb.d/init-temperature-database.sh
     # Create environment
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD="1234"
     # Bind mount the default Postgres port
     ports:
-      - "5003:5432"
+      - 5003:5432
 #MOUNTING VOLUMES
 volumes:
-  web:
   humidity-database:
   pressure-database:
   temperature-database:
