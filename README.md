@@ -1,5 +1,16 @@
 # MIC-Weather
 
+Docker updated:-
+1) Download or clone the project.
+2) Go to the project directory
+3) Make sure you have docker
+4) Use the docker command: docker-compose up -d
+5) check docker ps
+6) all the containers will be up and running
+7) give localhost:8080
+8) You can see the application
+
+OLD UPDATE:-
 1) Clone or download the project using the github link
 2) In your local, use command line and change directory to MIC-Weather folder
 3) Run the following command: pip install -r requirements.txt 
