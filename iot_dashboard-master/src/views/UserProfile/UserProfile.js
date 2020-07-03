@@ -13,7 +13,7 @@ import CardAvatar from "../../components/Card/CardAvatar.js";
 import CardBody from "../../components/Card/CardBody.js";
 import CardFooter from "../../components/Card/CardFooter.js";
 
-// import avatar from "assets/img/faces/marc.jpg";
+import senseHat from "../../assets/img/sensehat3.png";
 
 const styles = {
   cardCategoryWhite: {
@@ -31,6 +31,10 @@ const styles = {
     fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
     marginBottom: "3px",
     textDecoration: "none"
+  },
+  senseHatStyle: {
+    height:"200px",
+    align:"middle"
   }
 };
 
@@ -48,139 +52,31 @@ export default function UserProfile() {
               <p className={classes.cardCategoryWhite}></p>
             </CardHeader>
             <CardBody>
-              <p>IoT based Project aims to show the current Humidity, Temperature and Pressure parameters on the Internet server using Raspberry Pi.</p>
-              <p>This project is based on IoT and it functions as a weather monitoring station. It measures humidity, pressure and temperature of the environment.
-              We are using  Rasberry Pi 3 along with sense hat to measure the temperature, pressure and humidity. MQTT an IOT application is used to establish an publisher-subscriber network protocol to capture the live data from the hardware and publish the data as message queues.
-              We are using Flask python server and two different database postgres and SQLite as part of the backend and the client application is a react application.
-              We are using microservice architecture in this project to interact with various components.
-              The message queues  from the MQTT broker can be subscribed by a backend microservice to fetch the live data and update the database.
-              We have a live data microservice which routes the data subscribed from MQTT broker to the react application.
-              We have different microservices to fetch the weekly and last 24hrs data from the database to plot the graph for temperature, pressure and humidity in the react application.
-The client application dashboard is developed to display the live monitoring of weather forecast and a graphical view of the last24hours and weekly data of temperature, pressure and humidity. The server configuration for this project is done in docker containers along with web configurations.</p>
-              {/* <GridContainer>
-                <GridItem xs={12} sm={12} md={5}>
-                  <CustomInput
-                    labelText="Company (disabled)"
-                    id="company-disabled"
-                    formControlProps={{
-                      fullWidth: true
-                    }}
-                    inputProps={{
-                      disabled: true
-                    }}
-                  />
-                </GridItem>
-                <GridItem xs={12} sm={12} md={3}>
-                  <CustomInput
-                    labelText="Username"
-                    id="username"
-                    formControlProps={{
-                      fullWidth: true
-                    }}
-                  />
-                </GridItem>
-                <GridItem xs={12} sm={12} md={4}>
-                  <CustomInput
-                    labelText="Email address"
-                    id="email-address"
-                    formControlProps={{
-                      fullWidth: true
-                    }}
-                  />
-                </GridItem>
-              </GridContainer> */}
-              {/* <GridContainer>
-                <GridItem xs={12} sm={12} md={6}>
-                  <CustomInput
-                    labelText="First Name"
-                    id="first-name"
-                    formControlProps={{
-                      fullWidth: true
-                    }}
-                  />
-                </GridItem>
-                <GridItem xs={12} sm={12} md={6}>
-                  <CustomInput
-                    labelText="Last Name"
-                    id="last-name"
-                    formControlProps={{
-                      fullWidth: true
-                    }}
-                  />
-                </GridItem>
-              </GridContainer> */}
-              {/* <GridContainer>
-                <GridItem xs={12} sm={12} md={4}>
-                  <CustomInput
-                    labelText="City"
-                    id="city"
-                    formControlProps={{
-                      fullWidth: true
-                    }}
-                  />
-                </GridItem>
-                <GridItem xs={12} sm={12} md={4}>
-                  <CustomInput
-                    labelText="Country"
-                    id="country"
-                    formControlProps={{
-                      fullWidth: true
-                    }}
-                  />
-                </GridItem>
-                <GridItem xs={12} sm={12} md={4}>
-                  <CustomInput
-                    labelText="Postal Code"
-                    id="postal-code"
-                    formControlProps={{
-                      fullWidth: true
-                    }}
-                  />
-                </GridItem>
-              </GridContainer> */}
-              {/* <GridContainer>
-                <GridItem xs={12} sm={12} md={12}>
-                  <InputLabel style={{ color: "#AAAAAA" }}>About me</InputLabel>
-                  <CustomInput
-                    labelText="Lamborghini Mercy, Your chick she so thirsty, I'm in that two seat Lambo."
-                    id="about-me"
-                    formControlProps={{
-                      fullWidth: true
-                    }}
-                    inputProps={{
-                      multiline: true,
-                      rows: 5
-                    }}
-                  />
-                </GridItem>
-              </GridContainer> */}
+            <p>This IoT based Project aims to display the current humidity, temperature, and pressure parameters on the internet server using Raspberry Pi. This project is based on IoT and it functions as a weather monitoring station. It measures the humidity, pressure, and temperature of the environment.</p>
+            <p>Raspberry Pi 3 is being used here along with sensehat to measure the temperature, pressure, and humidity.</p>
+            <p>MQTT(MQ Telemetry Transport) is a network-based messaging protocol. It is used to establish a publisher-subscriber network protocol to capture the live data using the sensors mounted with the hardware and publish the data as message queues.</p>
+            <p>Flask python and database Postgres is used as part of the backend. The client application is a react application.</p>
+            <p>The microservice architecture in this project helps to interact with various components. The message queues from the MQTT broker can be subscribed by a backend microservice to fetch the live data and update the database.</p>
+            <p>A live data microservice which routes the data subscribed from the MQTT broker to the react application is in place. There are different microservices to fetch the weekly and the last 24 hours of data from the database. This is to plot the graph for the temperature, pressure, and humidity in the react application.</p>
+            <p>The client application dashboard is developed to display the live monitoring of the weather forecast. Also, to display a graphical view of the last 24hours and weekly data of temperature, pressure, and humidity.
+The server configuration for this project is done in docker containers along with web configurations.</p>
             </CardBody>
             <CardFooter>
-              {/*  <Button color="primary">Update Profile</Button> */}
             </CardFooter>
           </Card>
         </GridItem>
-        {/* <GridItem xs={12} sm={12} md={4}>
+        <GridItem>
           <Card profile>
-            <CardAvatar profile>
-              <a href="#pablo" onClick={e => e.preventDefault()}>
-                <img src={avatar} alt="..." />
-              </a>
+            <CardAvatar senseHat>
             </CardAvatar>
-            <CardBody profile>
-              <h6 className={classes.cardCategory}>CEO / CO-FOUNDER</h6>
-              <h4 className={classes.cardTitle}>Alec Thompson</h4>
-              <p className={classes.description}>
-                Don{"'"}t be scared of the truth because we need to restart the
-                human foundation in truth And I love you like Kanye loves Kanye
-                I love Rick Owens’ bed design but the back is...
-              </p>
-              <Button color="primary" round>
-                Follow
-              </Button>
+            <CardHeader color="rose">
+              <h4 className={classes.cardTitleWhite}>Hardware Setup</h4>
+            </CardHeader>
+            <CardBody senseHat>
+              <img  className={classes.senseHatStyle} src={senseHat} alt="hardware setup" />
             </CardBody>
           </Card>
-        </GridItem> */}
+        </GridItem>
       </GridContainer>
     </div>
   );
