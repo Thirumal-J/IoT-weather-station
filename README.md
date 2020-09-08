@@ -1,4 +1,19 @@
 # MIC-Weather
+This project is a simple IoT based weather station using Raspberry pi and Sense HAT developed using Python.
+
+# Technolgies used:
+Python
+PostgreSQL
+ReactJS
+MQTT
+Docker
+Nginx API gateway
+
+# Hardwares Used:
+Raspberry Pi
+Sense HAT
+LAN Cable
+USB Cable
 
 Docker updated:-
 1) Download or clone the project.
@@ -9,6 +24,7 @@ Docker updated:-
 6) all the containers will be up and running
 7) give localhost:8080
 8) You can see the application
+
 
 OLD UPDATE:-
 1) Clone or download the project using the github link
