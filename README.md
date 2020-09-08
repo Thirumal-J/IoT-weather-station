@@ -2,18 +2,18 @@
 This project is a simple IoT based weather station using Raspberry pi and Sense HAT developed using Python.
 
 # Technolgies used:
-Python
-PostgreSQL
-ReactJS
-MQTT
-Docker
-Nginx API gateway
+1. Python
+2. PostgreSQL
+3. ReactJS
+4. MQTT
+5. Docker
+6. Nginx API gateway
 
 # Hardwares Used:
-Raspberry Pi
-Sense HAT
-LAN Cable
-USB Cable
+1. Raspberry Pi
+2. Sense HAT
+3. LAN Cable
+4. USB Cable
 
 Docker updated:-
 1) Download or clone the project.
